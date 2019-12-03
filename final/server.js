@@ -8,6 +8,11 @@ var cors = require('cors');
 
 // #2 Add body-parser package to the app
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 // ===============================
 
 
@@ -44,4 +49,6 @@ app.use('/api', cors(), router);
 // #10 Start the server
 
 // ===============================
-console.log('Magic happens on http://localhost:' + port);
+var port = process.env.PORT || 8080
+app.listen(port, function () {console.log('Magic happens on http://localhost:' + port);});
+
