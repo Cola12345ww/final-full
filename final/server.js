@@ -7,12 +7,7 @@ var app = express();
 var cors = require('cors');       
 
 // #2 Add body-parser package to the app
-
 var bodyParser = require('body-parser');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 // ===============================
 
 
@@ -23,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // #3 Serve static content in folder frontend
-
+app.use(express.static('frontend'))
 // ===============================
 
 
@@ -38,60 +33,9 @@ router.get('/products', products.getAllProducts);
 router.get('/products/:pid', products.getProductById);
 
 // #4 Complete the routing for POST, PUT, DELETE
-app.post('/api/products', function (req, res) {
-    // Insert
-    var newproduct = req.body;
-    var product = new Product(newproduct);
-    product.save(function (err) {
-        if (err) res.status(500).json(err);
-        res.json({ status: "Add a Product" })
-
-    });
-
-
-});
-//เรียกดู
-app.get('/api/products', function (req, res) {
-    Product.find(function (err, products) {
-        if (err) res.status(500).json(err);
-        res.json(products);
-    })
-
-
-});
-
-app.get('/api/products', function (req, res) {
-    var id = req.param.id;
-    Product.find({ "_id": id }, function (err, products) {
-        if (err) res.status(500).json(err);
-        res.json(products);
-    })
-
-
-});
-
-// อัปเดต
-app.put('/api/products/:id', function (req, res) {
-    var id = req.params.id;
-    var updateproduct = req.body;
-    Product.findByIdAndUpdate( id , updateproduct, function (err) {
-        if (err) res.status(500).json(err);
-        res.json({status: "Update a Product"});
-    })
-
-
-});
-
-app.delete('/api/products/:id', function (req, res) {
-    var id = req.params.id;
-
-    Product.findByIdAndUpdate( id ,  function (err) {
-        if (err) res.status(500).json(err);
-        res.json({status: "Delete a Product"});
-    })
-
-
-});
+router.post('/products',products.addProduct);
+router.put('/products/:pid',products.updateProductById);
+router.delete('/products/:pid',products.deleteProductById);
 // ===============================
 
 
@@ -100,8 +44,6 @@ app.delete('/api/products/:id', function (req, res) {
 app.use('/api', cors(), router);
 
 // #10 Start the server
-
+app.listen(8080);
 // ===============================
-var port = process.env.PORT || 8080
-app.listen(port, function () {console.log('Magic happens on http://localhost:' + port);});
-
+console.log('Magic happens on http://localhost:' + port);
